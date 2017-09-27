@@ -1,0 +1,22 @@
+apiRules:
+- exclude:
+    type: Method
+    hasAttribute:
+      uid: System.Diagnostics.DebuggerNonUserCodeAttribute
+- exclude:
+    uidRegex: \.Google#Protobuf#IMessage#Descriptor$
+- exclude:
+    type: Field
+    uidRegex: FieldNumber$
+- exclude:
+    type: Property
+    uidRegex: Parser$
+- exclude:
+    type: Property
+    uidRegex: Descriptor$
+- exclude:
+    type: Method
+    uidRegex: Equals\(
+- exclude:
+    type: Type
+    uidRegex: Reflection$
