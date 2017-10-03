@@ -27,6 +27,9 @@ using Google.Api.Gax;
 using Google.Protobuf;
 using System.Configuration;
 using System.IO;
+using Grpc.Core;
+using Google.Apis.Auth.OAuth2;
+using Grpc.Auth;
 
 namespace GoogleCloudSamples
 {
@@ -35,11 +38,27 @@ namespace GoogleCloudSamples
         private static string _topic = "";
         private static string _project_id = "";
         private static string _sub_id = "";
+        private static Channel _channel;
 
         static void Main(string[] args)
         {
+           
+
+            GoogleCredential googleCredential = null;
+            //json檔為google cloud platform 下載該服務的Credential
+            using (var jsonStream = new FileStream("E-Record-1a8760774549.json", FileMode.Open,
+                FileAccess.Read, FileShare.Read))
+            {
+                googleCredential = GoogleCredential.FromStream(jsonStream)
+                    .CreateScoped(PublisherClient.DefaultScopes);
+            }
+
+            _channel = new Channel(PublisherClient.DefaultEndpoint.Host,
+                PublisherClient.DefaultEndpoint.Port,
+                googleCredential.ToChannelCredentials());
+
             // Instantiates a client
-            SubscriberClient subscriberClient = SubscriberClient.Create();
+            SubscriberClient subscriberClient = SubscriberClient.Create(_channel);
 
             Task.Run(() => PullTask("worker"));
 
